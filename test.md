@@ -141,7 +141,29 @@ docker image prune -a -f
 
 ## 6. CI/CD và quản lý container với Watchtower and Portainer
 
-Tham khảo [Watchtower](https://github.com/containrrr/watchtower) và [Portainer](https://docs.portainer.io/start/install-ce/server/docker/linux)
+Tham khảo [Watchtower](https://github.com/containrrr/watchtower) và [Portainer](https://docs.portainer.io/start/install-ce/server/docker/linux)  
+
+Đầu tiên cần build image ở local với file `Dockerfile` như bước 2. Sau khi build xong, cần push image lên GHCR. (image nên để private)
+
+```bash
+
+# Login GitHub Container Registry
+docker login ghcr.io -u your-username -p my-token
+
+# Build and push
+docker build -t ghcr.io/your-username/nextapp:latest .
+docker push ghcr.io/your-username/nextapp:latest
+
+```
+
+Trên VPS cần có file `docker-compose.yml` với file `.env` và cần login với GHCR để pull image private về.
+
+```bash
+
+# Login GitHub Container Registry
+docker login ghcr.io -u your-username -p my-token
+
+```
 
 File `docker-compose.yml` mới như sau:
 
@@ -163,9 +185,7 @@ services:
 
     nextapp:
         container_name: nextapp
-        build:
-            context: .
-            dockerfile: Dockerfile
+        image: ghcr.io/your-username/nextapp:latest
         env_file:
             - .env
         environment:
@@ -177,7 +197,7 @@ services:
             - "com.centurylinklabs.watchtower.enable=true"
         networks:
             - next_network
-    
+    # Tuỳ chọn không bắt buộc
     portainer:
         image: portainer/portainer-ce:latest
         container_name: portainer
@@ -197,6 +217,12 @@ networks:
 volumes:
     portainer_data:
 
+```
+
+Lưu ý cần mở port 9000 cho Portainer với UFW:
+
+```bash
+sudo ufw allow 9000/tcp
 ```
 
 ---
