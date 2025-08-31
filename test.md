@@ -225,6 +225,14 @@ Lưu ý cần mở port 9000 cho Portainer với UFW:
 sudo ufw allow 9000/tcp
 ```
 
+Giờ đây mỗi khi update code chỉ cần build && push image lại thì Watchtower sẽ tự động phát hiện thay đổi của code trong image sau đó pull image về và tự động remove && run container.
+
+```bash
+
+# Build and push rút gọn
+docker build . -t ghcr.io/your-username/nextapp:latest --push
+
+```
 ---
 
 ## 7. Setup CI/CD với GitHub Actions
