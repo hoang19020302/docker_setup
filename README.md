@@ -44,7 +44,7 @@ npm-debug.log
 Tạo file `Dockerfile` ở thư mục gốc:
 
 ```Dockerfile
-# Stage 1: build app
+# Stage 1: Build app
 FROM node:20-alpine AS builder
 
 WORKDIR /app
@@ -55,15 +55,23 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# Stage 2: run app
+# Stage 2: Run (Node server)
 FROM node:20-alpine AS runner
+
 WORKDIR /app
 
-COPY --from=builder /app ./
+ENV NODE_ENV=production
+
+# Copy only necessary files
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/next.config.js ./next.config.js
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start"]
+CMD ["npm", "start"]
 
 ```
 
@@ -83,8 +91,6 @@ services:
       dockerfile: Dockerfile
     env_file:
       - .env
-    environment:
-      - NODE_ENV=production
     ports:
       - "3000:3000"
     restart: always
@@ -188,8 +194,6 @@ services:
         image: ghcr.io/your-username/nextapp:latest
         env_file:
             - .env
-        environment:
-            - NODE_ENV=production
         ports:
             - "3000:3000"
         restart: always
@@ -299,8 +303,6 @@ services:
     restart: always
     env_file:
       - .env
-    environment:
-      - NODE_ENV=production
     ports:
       - "3000:3000"
     
