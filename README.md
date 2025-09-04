@@ -18,11 +18,13 @@ Tạo file `.env` ở thư mục gốc:
 ```env
 
 # Auth
-NEXTAUTH_URL=https://ui.vhtech.vn
-NEXTAUTH_SECRET=your-secret-key
+NEXTAUTH_URL=https://ui.vhtech.vn # Production
+#NEXTAUTH_URL=http://ip-local:3000 # Local
+NEXTAUTH_SECRET=your-secret-key # Tạo ngẫu nhiên bằng `openssl rand -base64 32`
 
 # API backend
-LINK_API=https://odoo.vhtech.vn
+LINK_API=https://odoo.vhtech.vn # Production
+#LINK_API=http://ip-local:8069 # Local
 
 ```
 
@@ -67,7 +69,6 @@ RUN npm install --omit=dev
 # Copy only necessary files
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/next.config.ts ./next.config.ts
 
 EXPOSE 3000
 
@@ -115,6 +116,10 @@ docker compose logs -f
 docker compose down
 
 ```
+
+Lưu ý: Khi thay đổi giá trị cấu hình trong file `.env` cần rebuild lại image để tránh container dùng lại image cũ → dẫn đến NEXTAUTH_URL, NEXTAUTH_SECRET, LINK_API vẫn giá trị cũ.  
+
+Điều này sẽ khiến token sign/verify không trùng → "Invalid Token".
 
 ---
 
