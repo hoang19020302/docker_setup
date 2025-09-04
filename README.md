@@ -20,11 +20,13 @@ Tạo file `.env` ở thư mục gốc:
 # Auth
 NEXTAUTH_URL=https://ui.vhtech.vn # Production
 #NEXTAUTH_URL=http://ip-local:3000 # Local
+#NEXTAUTH_URL=http://localhost:3000 # Docker
 NEXTAUTH_SECRET=your-secret-key # Tạo ngẫu nhiên bằng `openssl rand -base64 32`
 
 # API backend
 LINK_API=https://odoo.vhtech.vn # Production
 #LINK_API=http://ip-local:8069 # Local
+#LINK_API=http://host.docker.internal:8069 # Docker hostname
 
 ```
 
