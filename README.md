@@ -26,7 +26,7 @@ NEXTAUTH_SECRET=your-secret-key # Tạo ngẫu nhiên bằng `openssl rand -base
 # API backend
 LINK_API=https://odoo.vhtech.vn # Production
 #LINK_API=http://ip-local:8069 # Local
-#LINK_API=http://host.docker.internal:8069 # Docker hostname
+#LINK_API=http://localhost:8069 # Docker
 
 ```
 
@@ -97,6 +97,7 @@ services:
     ports:
       - "3000:3000"
     restart: always
+    network_mode: "host"
 
 ```
 
